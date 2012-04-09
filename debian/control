@@ -1,0 +1,13 @@
+Source: hs-usercontrolpanel
+Section: net
+Priority: extra
+Maintainer: HostingStack Maintainers <maintainers@hostingstack.org>
+Build-Depends: debhelper (>= 7.0.50~), rsync, libpq-dev, git-core, ruby1.9.1-full, ruby1.9.1-dev, hs-runtime-rubygems1.9.1, rubygem1.9-bundler
+Standards-Version: 3.9.2
+Origin: HostingStack
+
+Package: hs-usercontrolpanel
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ruby1.9.1-full, hs-runtime-rubygems1.9.1, rubygem1.9-bundler, nginx, git, hs-config
+Description: HostingStack User Control Panel
+  User Control Panel.

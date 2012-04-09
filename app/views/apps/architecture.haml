@@ -1,0 +1,101 @@
+%h2= '%s: Cloud Architecture' % @app.name
+
+.service_overview
+  .visitors.block
+    %img{:src => "/images/visitors.png"}
+    %br>
+    Visitors
+  .arrow.block
+  .services.block
+    - Service.find(:all, :params => {:type => "HttpGateway"}).each do |http_gateway|
+      .service{:id=>'service-lb'}
+        Load Balancer
+        .detail
+          nginx 1.0.X
+  .arrow.block
+  .services.block{:style => 'min-height: 51px;'}
+    %div{:style=>'position: absolute; left: 180px;'}
+      .replace_here.serviceoverride#service-webinstances
+        #replace_here
+          .spinner
+            %input{:type=>:text,:class=>'spinner',:name=>'maximum_web_instances',:value=>@app.maximum_web_instances,:size=>2,:style=>"display: inline; margin: 0; padding: 0; border: none; width: 1.5em; height: 1.4em !important;font-size: 1.7em; line-height: 1.4em; text-align: center", 'data-autosubmit' => app_maximum_web_instances_path(@app) + ' #replace_here'}
+            .detail{:style=>'font-size: .65em; line-height: 1em;'} instances
+            .updown
+              .up
+                +
+              .down
+                \-
+    - if @app.active_deployment
+      - @app.active_deployment.deployment_installs.map {|install| install.service }.each do |app_host|
+        .service{:id => 'service-webserver'}
+          Web Server
+          .detail
+            = @app.template.name
+      - if @app.active_deployment.deployment_installs.length == 0
+        .service{:id => 'service-webserver'}
+          Web Server
+          .detail
+            = @app.template.name
+    - else
+      .no_deployment
+        Web Server not active
+        %br
+        = link_to "Upload sourcecode", new_app_deployment_url(@app)
+
+  .arrow.double.block
+  .services.block.databases
+    - @app.service_instances.each do |service_instance|
+      .service{:id => "service-#{service_instance.id}"}
+        = service_instance.service.name
+
+  .descriptions
+    .service.hint.show
+      Click on a server to show its configuration, availability and scaling information.
+    - @app.service_instances.each do |service_instance|
+      .service{:for => "service-#{service_instance.id}"}
+        %h3
+          = service_instance.service.description
+        != BlueCloth.new(service_instance.service.info || '').to_html
+        %ul{:style => "margin-bottom: 0"}
+          %li
+            %strong Hostname:
+            127.0.0.1
+          - if service_instance.connectiondata.attributes['username']
+            %li
+              %strong Username:
+              = service_instance.connectiondata.attributes['username']
+          - if service_instance.connectiondata.attributes['password']
+            %li
+              %strong Password:
+              = service_instance.connectiondata.attributes['password']
+          - if service_instance.connectiondata.attributes['database']
+            %li
+              %strong Database:
+              = service_instance.connectiondata.attributes['database']
+    .service{:for => 'service-webserver'}
+      %h3
+        = @app.template.name
+      This is your application webserver, running your uploaded sourcecode.
+    .service{:for => 'service-lb'}
+      %h3
+        Load Balancer
+      %ul
+        %li
+          %strong IP Address:
+          = Service.find(:all, :params => {:type => "HttpGateway"}).first.server.external_ip
+        %li
+          %strong Software:
+          nginx 1.0.X
+        %li
+          %strong Redundant:
+          No
+      The load balancer distributes requests across multiple web servers and takes care of slow clients and uploads.
+    .service{:for=>'service-webinstances'}
+      %h3
+        Web Instances Setting
+      %p
+        Create multiple instances for scaling purposes.
+      %p
+        Maximum Number for your account:
+        = User.to_adapter.get(@app.user_id).maximum_web_instances_allowed + 1 - App.to_adapter.find_all(:user_id => @app.user_id).select{|x| x.id != @app.id}.map{|x| x.maximum_web_instances - 1}.sum
+

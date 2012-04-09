@@ -1,0 +1,24 @@
+- if not (route and route.id) and not (domain and domain.id)
+  %li.location
+    %label Failed
+    Invalid Domain!
+- else
+  %li.location{'data-location-id' => route.id, 'data-refresh-url' => app_route_refresh_path(route.app, route), 'data-domain' => route.domain_id ? route.domain.name : ''}
+    %div{'id' => @is_refresh ? 'refresh' : nil}
+      - if route.errors.length>0
+        %label Failed
+      - else
+      - if route.domain
+        = render :partial => 'routes/url', :locals => {:route => route}
+      - if route.errors.length==0
+        = link_to 'Delete', [route.app, route], :method => :delete, :remote => :true, :class => 'delete'
+        %span{:class => "ssl ssl_#{route.ssl_state[0]}", :title => route.ssl_state[1]} SSL
+        = link_to 'DNS', app_route_verify_dns_path(route.app, route), :remote => true, :class => "dns dns_#{route.dns_state[0]}", :title => route.dns_state[1]
+        - if defined? created
+          .dnsintro
+            DNS settings here:
+      - else
+        - route.errors.each do |k,v|
+          = k.to_s.sub(/_id/,'')
+          = v
+

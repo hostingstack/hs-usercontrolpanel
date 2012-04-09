@@ -1,0 +1,9 @@
+Listen 9100
+<VirtualHost *:9100>
+	ServerName hs-ucp
+	DocumentRoot /usr/lib/hs/usercontrolpanel/public
+	PassengerUser ucp
+	PassengerGroup nogroup
+	PassengerMinInstances 2
+	PassengerPreStart http://localhost:9100/
+</VirtualHost>

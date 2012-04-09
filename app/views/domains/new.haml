@@ -1,0 +1,11 @@
+%h2 Add new domain
+
+= form_for @domain do |f|
+  = f.label :name, "Domain name:"
+  = f.text_field :name, :autofocus => true
+  %br
+  %br
+  %p
+    Verification FIXME.
+  
+  = f.submit "Continue"

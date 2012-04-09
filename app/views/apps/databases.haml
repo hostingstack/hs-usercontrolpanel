@@ -1,0 +1,24 @@
+%h2= '%s: Databases' % @app.name
+
+.databases
+  %table
+    %tr
+      %th
+      %th Host
+      %th Port
+      %th Database Name
+      %th Username
+      %th Password
+    - @service_instances.each do |service_instance|
+      - cd = service_instance.connectiondata.attributes
+      %tr
+        %th.name= service_instance.service.name
+        %td 127.0.0.1
+        %td= cd['default_local_port']
+        %td{:class => cd['database'] ? '' : 'empty'}= cd['database']
+        %td{:class => cd['username'] ? '' : 'empty'}= cd['username']
+        %td{:class => cd['password'] ? '' : 'empty'}= cd['password']
+%br
+This is for connections from your application running inside the cloud.
+%br
+External database access is currently not available.

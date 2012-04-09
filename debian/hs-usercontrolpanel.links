@@ -1,0 +1,3 @@
+var/log/hs-usercontrolpanel usr/lib/hs/usercontrolpanel/log
+var/lib/hs/usercontrolpanel/run usr/lib/hs/usercontrolpanel/run
+etc/hs/shared/hs.yml usr/lib/hs/usercontrolpanel/config/hs.yml

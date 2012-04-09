@@ -1,0 +1,3 @@
+#! /bin/sh
+
+rm -f /etc/nginx/sites-enabled/hs-usercontrolpanel-site || echo "Failed to disable nginx hs-usercontrolpanel-site"

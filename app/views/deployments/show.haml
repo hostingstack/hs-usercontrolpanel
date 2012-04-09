@@ -1,0 +1,69 @@
+- if @deployment.state == 'success'
+  #deployment_state
+    - if @deployment.envtype == 'staging'
+      %h2= '%s: SFTP Upload (SSH Access)' % @app.name
+      %table.deployment_details
+        %tr
+          %th
+            Host:
+          %td
+            = @deployment.ssh_hostname
+        %tr
+          %th
+            Username:
+          %td
+            = @deployment.ssh_username
+        %tr
+          %th
+            Password:
+          %td
+            %span#new_password
+              = button_to 'Request new password', app_new_ssh_password_path(@app), :method=>'post', :remote => true, :disable_with => 'Loading...'
+
+      %p
+        To test your application, go to
+        %br>
+        %code
+          = link_to @app.builtin_route_staging, @app.builtin_route_staging, :target => '_blank'
+      %table.buttons
+        %tr
+          %td
+            %span.prose
+              when you're confident that your app works, 
+            = button_to 'Save changes', app_deployment_commit_staging_path(@app, @deployment), :method=>'post', :disable_with => 'Loading...'
+          %td.cancel
+            %span.prose
+              if you prefer to start over
+              %br>
+              or want to upload sourcecode using a different method
+            = button_to 'Cancel', app_deployment_cancel_staging_path(@app, @deployment), :method=>'post', :disable_with => 'Loading...', :class => 'cancel'
+    - else
+      %h2= "%s: Deployment Successful!" % @app.name
+      %table.deployment_details
+      %p
+        You can now visit the website at:
+        = link_to @app.default_route, @app.default_route, :target => '_blank'
+- elsif @deployment.state == 'failure'
+  #deployment_state
+    %h2= "%s: Deployment Failed" % @app.name
+    %p
+      Please contact the support team and mention
+      %strong deployment #{@deployment.id}.
+    %p
+      = link_to 'Back to "Upload Sourcecode"', new_app_deployment_path(@deployment.app)
+- else
+  - if @deployment.envtype == 'staging'
+    %h2= "%s: Preparing SFTP (SSH) environment..." % @app.name
+  - else
+    %h2= "%s: Deploying..." % @app.name
+  #deployment_state.working
+    %h2 Please wait...
+  
+  :javascript
+    Controlpanel.Deployment.drain_status('#{app_deployment_drain_status_path(@app, @deployment)}');
+
+#deployment_logs{:class => @deployment.envtype}
+  = (current_user.is_admin ? @deployment.log_private : @deployment.log).to_s.gsub("\n", "<br />").html_safe
+
+:javascript
+  $('#deployment_logs').scrollTop(1000000);

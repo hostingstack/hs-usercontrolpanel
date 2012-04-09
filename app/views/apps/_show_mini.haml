@@ -1,0 +1,10 @@
+%li.app.mini{:class => app.screenshot_url ? ' with-screenshot' : ''}
+  - if app.screenshot_url
+    %div{:class => app.screenshot_url ? ' with-screenshot' : '' , :style => ("background-image: url(#{app.screenshot_url})" if app.screenshot_url)}
+      - if app.template.icon_url
+        = image_tag(app.template.icon_url, :class => 'icon')
+  - else
+    = app.template.name
+  .name
+    = app.name
+

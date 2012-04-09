@@ -1,0 +1,73 @@
+%h2= '%s: Cronjobs' % @app.name
+
+.commands{:class => @cs.empty? ? 'empty' : ''}
+  - if @cs.empty?
+    %h2 No jobs defined
+
+  .note
+    Jobs may start up to 30min later than specified, due to load distribution
+
+  - @cs.each do |c,ts|
+    .command
+      .meta
+        %h2
+          %span.name
+            = c.name
+          - if c.source == 'web'
+            = link_to 'Delete', [@app, c], :method => :delete, :remote => :true, :class => 'delete command'
+        .cmd
+          = text_field_tag 'command', c.command, 'data-submit' => app_command_path(@app,c), 'class' => 'edit-inline display command noclear'
+      .state
+        .last-run
+          Last Run:
+          Unknown
+        %br
+        = button_to 'Logs', '/TBD', :disabled => 'disabled', :class => 'logs'
+        = button_to 'Run Now', '/TBD', :disabled => 'disabled', :class => 'run_now'
+      %div.tbl{:style=>'clear:left;'}
+        %div.tr.h
+          %div.t Scheduled for
+          %div.t Start after
+          %div.t Enabled
+          %div.clr
+        - ts.each do |t|
+          = render :partial => 'periodic_tasks/show', :locals => {:t => t}
+        = form_for PeriodicTask.new, :url => app_periodic_tasks_path(@app.name), :method => :put, :as => :periodic_task, :html => {:class => 'tr append_before','data-remote-append' => true}, :remote => true  do |f|
+          %div.t
+            = hidden_field_tag 'periodic_task[command_id]', c.id
+            = hidden_field_tag 'periodic_task[enabled]', true
+            %select{:name=>'periodic_task[interval]'}
+              - PeriodicTask.supported_intervals(@app.name).each do |si|
+                %option{:value => si}= si
+          %div.t
+            = select_tag 'periodic_task[start_hour]', (0..23).map{|x| "<option value='%02d'>%02d:00</option>" % [x,x]}.join('').html_safe
+          %div.t= f.submit "New"
+          %div.clr
+  %div.info
+    %small Commands that you have defined in your Procfile will also show up here.
+  %div.newbtn.add
+    %button{:onclick => '$(this).parent().siblings(".new").show(); $(this).hide();'} Create new Command
+  %div.new
+    %h2 Add Command
+    .note
+      Commands will run in the <code>/app/code</code> working directory
+    %br{:style => 'clear:left'}
+    = form_for @c, :url => app_commands_path(@app.name) do |f|
+      = f.label :command, "Command", :style => "display:block;"
+      = f.text_field :command, :style => "font-family: monospace; min-width: 400px;"
+      %br>
+      %small{:style=>'font-family: monospace'} Ex: rake job:export_csv
+      = @c.errors[:command].join('')
+      %br>
+      %br>
+      = f.label :interval, "Scheduled for"
+      = f.label :interval, "Start at", :style => 'position: absolute; left: 120px;'
+      %br>
+      %select{:name=>'periodic_task[interval]'}
+        - PeriodicTask.supported_intervals(@app.name).each do |si|
+          %option{:value => si}= si
+      = select_tag 'periodic_task[start_hour]', (0..23).map{|x| "<option value='%02d'>%02d:00</option>" % [x,x]}.join('').html_safe, :style => 'position: absolute; left: 120px;'
+      %br>
+      %br>
+      = f.submit "Create"
+

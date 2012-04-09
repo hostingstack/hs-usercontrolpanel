@@ -1,0 +1,25 @@
+%fieldset
+  %legend Login
+  = form_for(:user_session) do |f|
+    = errors(@user_session)
+    
+    .field_with_label
+      = f.label :email, "E-mail address"
+      = f.text_field :email
+  
+    .field_with_label
+      = f.label :password
+      = f.password_field :password
+  
+    .submit
+      = f.submit "Sign in"
+  
+    :javascript
+      $('#user_session_email').focus();
+
+%fieldset
+  %legend No account yet?
+  .text
+    %p
+      We're currently in private beta.
+    = link_to 'Signup for an invite!', 'http://www.solidrailshosting.com'

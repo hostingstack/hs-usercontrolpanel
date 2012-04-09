@@ -1,0 +1,26 @@
+%h2= '%s: Locations' % @app.name
+
+.settings
+  %ul.locations
+    %li.location
+      .url
+        %small>
+          = @app.builtin_route
+    = render :partial => 'routes/list-item', :collection => @app.routes.sort, :as => :route
+  %div#add_location
+    %hr>
+    = form_for [@app, Route.new(:app_name => @app.name)], :remote => true do |f|  
+      .location
+        %p.proxy.url
+          http://
+          = f.text_field :subdomain, :size => 8, :title=>"subdomain"
+          \.
+          <input type="text" name="domain" value="" id="route_domain_name" size=10 title="example.com" />
+          \/
+        .actions
+          .verify
+            we don't know if this domain is yours. please
+            = button_to_function 'Verify it',"", :id => 'verify_domain'
+          .errors
+          = f.submit 'Add'
+          %p#route_domain_unknown We will have to verify your ownership of this domain after you have added it.

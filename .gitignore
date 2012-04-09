@@ -1,0 +1,23 @@
+.DS_Store
+
+*.swp
+
+# Bundler
+.bundle
+bundled
+
+# Rails stuff
+bin/
+config/hs.yml
+db/*.sqlite3
+log/*.log
+tmp/restart.txt
+tmp/**/*
+public/stylesheets/*.css
+public/stylesheets/sass/variables.scss
+
+# Debian stuff
+debian/files
+debian/*.debhelper.log
+debian/*.substvars
+debian/hs-usercontrolpanel/

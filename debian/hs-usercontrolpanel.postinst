@@ -1,0 +1,30 @@
+#! /bin/sh
+
+set -e
+
+prevver="$2"
+
+fixperms() {
+  dpkg-statoverride --list /var/log/hs-usercontrolpanel >/dev/null || \
+    dpkg-statoverride --update --add hsucp root 0750 /var/log/hs-usercontrolpanel
+  dpkg-statoverride --list /var/lib/hs/usercontrolpanel/run >/dev/null || \
+    dpkg-statoverride --update --add hsucp www-data 0750 /var/lib/hs/usercontrolpanel/run
+}
+
+case "$1" in
+	configure)
+		adduser --system --quiet --no-create-home hsucp
+		fixperms
+		ln -s /etc/nginx/sites-available/hs-usercontrolpanel-site /etc/nginx/sites-enabled || true
+		chown -R hsucp: /usr/lib/hs/usercontrolpanel/public/stylesheets
+		;;
+	abort-upgrade|abort-deconfigure|abort-remove)
+		:
+		;;
+	*)
+		echo "Called with unknown argument $1, bailing out."
+		exit 1
+		;;
+esac
+
+#DEBHELPER#

@@ -1,0 +1,86 @@
+%h2= '%s: Upload Sourcecode' % @app.name
+
+#deployment
+  %ul.nav
+    %li.upload
+      = link_to "Upload Zip File", "#source-upload"
+    %li.interactive
+      = link_to "SFTP (SSH)", "#source-interactive"
+    %li.cli
+      = link_to "Commandline Deploy Tool", "#source-cli"
+  #source-upload
+    - if @app.active_deployment && @app.active_deployment.source == 'interactive'
+      %p.warning
+        The current deployment was created via SFTP/SSH.
+        %br>
+        Deploying this way, you will lose all code changes you made earlier!
+    = form_for [@app, @deployment_upload], :html => {:multipart => true} do |f|
+      = f.hidden_field :source
+      %p
+        Please create a .zip file containing your website's sourcecode &amp; select it here:
+      %br
+      %p#upload_selector
+        = f.file_field :code
+      #uploading{:style => "display: none"}
+        #progress.bar
+          #progressbar
+      = f.submit "Upload now"
+  #source-interactive
+    %div{:style => 'float: left;'}
+      = form_for [@app, @deployment_interactive] do |f|
+        = f.hidden_field :source
+        = f.submit "Enable"
+    %p{:style => 'margin-left: 7em; line-height: 2em;'}
+      This method allows you to upload your application's sourcecode using any SFTP client.
+    %p.btw
+      You will also have the chance to try out your application on a test address.
+      %br>
+      This is great for installing many PHP-based web applications that require you to click through an installer or setup wizard.
+    %p.btw
+      Advanced users can also use this to inspect the runtime environment using SSH.
+  #source-cli
+    - if @app.active_deployment && @app.active_deployment.source == 'interactive'
+      %p.warning
+        The current deployment was created via SFTP/SSH.
+        %br>
+        Deploying this way, you will lose all code changes you made earlier!
+    %p
+      1. Install the deploy commandline tool (for OSX and Linux - requires Rubygems)
+    .upload-commands
+      gem install deployto
+    %p
+      2. Create the target (only necessary once)
+    .upload-commands
+      = "deploy add production %s" % @app.cli_api_app_name
+    %p
+      3. Deploy
+    .upload-commands
+      deploy production
+
+    %p
+      After the upload finished, you can
+      %a{:href => @app.default_route} visit the website
+      to test it.
+
+:javascript
+  var active_deployment_source = "#{h @app.active_deployment.source rescue ""}";
+  $('#deployment').tabs();
+  if (active_deployment_source != "") {
+    $('#deployment').tabs("select", "#source-" + active_deployment_source);
+  }
+  $('#source-upload #deployment_submit')[0].disabled = false; /* Partial refresh sometimes keeps disabled state */
+  $('#source-upload form#new_deployment').uploadProgress({
+    start: function() {
+      $('#source-upload #deployment_submit')[0].value = "Uploading...";
+      $('#source-upload #deployment_submit')[0].disabled = true;
+      $('#upload_selector').hide();
+      $('#uploading').show();
+    },
+    error: function() {
+      $('#source-upload #deployment_submit')[0].value = "Start deployment";
+      $('#source-upload #deployment_submit')[0].disabled = false;
+      $('#progressbar').css('width', 0);
+      $('#upload_selector').show();
+      $('#uploading').hide();
+    }
+  });

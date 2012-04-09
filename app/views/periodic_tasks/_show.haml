@@ -1,0 +1,10 @@
+%div.replace_here.replace_this.tr
+  %div.t= t.errors.length > 0 ? "#{t.errors.keys()[0]} #{t.errors[t.errors.keys()[0]][0]}" : t.interval
+  %div.t
+    = t.errors.length > 0 ? "—" : "#{t.start_hour}:00"
+  %div.t
+    - if t.errors.length == 0
+      - form_for t, :url => app_periodic_task_path(@app, t), :remote => true  do |f|
+        = f.check_box :enabled, :onchange => "$(this.form).trigger('submit');"
+      = link_to 'Delete', [@app, t], :method => :delete, :remote => :true, :class => 'delete periodictask'
+  %div.clr

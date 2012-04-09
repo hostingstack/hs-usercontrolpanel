@@ -1,0 +1,79 @@
+.location_verify
+  %p= @route.dns_state[1]
+
+  - if @route.dns_state[0] != :ok
+    %p To fix this, please set your DNS configuration to:
+
+  - cname = @route.expected_dns.keys.include? 'cname'
+  %table
+    %tr.copypaste
+      %th Name
+      %th Type
+      %th Content
+    %tr.copypaste
+      %td= @route.hostname
+      %td= (cname ? 'CNAME' : 'A')
+      %td= @route.expected_dns[cname ? 'cname' : 'a' ][0]
+    %tr.buttons
+      %td
+        = button_to 'Recheck', app_route_verify_dns_path(@route.app, @route), :remote=>true
+      %td.aside{:colspan=>2}
+        Last Check:
+        = @route.dns_verify_last_at or 'Never'
+    - if @route_result
+      %tr.route_result
+        %td &nbsp;
+        %td{:colspan=>2}
+          - if @route.dns_verify_last_successful
+            Congrats, this location is properly set up!
+          - else
+            Sorry, the validation failed at this time.
+            %br>
+            This might be the fault of your provider, try again in a few minutes!
+            %br>
+            %a.d{:onclick=>'$(".route_result .details").show();return false;'} Show Details
+            .details{:style => 'display: none;'}
+              %pre= @route_result.dns_verify_last_log
+
+  - if not @route.domain.verified or @domain_result
+    %br>
+    - if not @domain_result
+      %br>
+      %br>
+      %p.aside
+        %a.d{:href=>'', :onclick=>'$("#domain_verify").show(); return false;'} I do not want to point my DNS record to the new site yet
+    #domain_verify{:style=> ( @domain_result ? '' : 'display: none;' ) }
+      - if @route.domain.verified
+        %p
+          Congrats, the domain is now verified!
+      - else
+        %p
+          If you do not want to do this yet but need us to serve the app on this location for testing purposes,
+          you can verify your domain ownership seperately by creating the following DNS entry:
+        %table
+          %tr.copypaste
+            %th Name
+            %th Type
+            %th Content
+          %tr.copypaste
+            %td= "#{@route.domain.verification_code}.#{@route.domain.name}"
+            %td= 'CNAME'
+            %td= CLOUD_CONFIG['cloud.domain.name']
+          %tr.buttons
+            %td
+              = button_to 'Recheck', app_route_verify_domain_dns_path(@route.app, @route), :remote => true
+            %td.aside{:colspan=>2}
+              Last Check:
+              = @route.domain.dns_verify_last_at or 'Never'
+          - if @domain_result
+            %tr.domain_result
+              %td &nbsp;
+              %td{:colspan=>2}
+                Sorry, the validation failed at this time.
+                %br>
+                This might be the fault of your provider, try again in a few minutes!
+                %br>
+                %a.d{:onclick=>'$(".domain_result .details").show();return false;',:href=>''} Show Details
+                .details{:style => 'display: none;'}
+                  %pre= @domain_result.dns_verify_last_log
+

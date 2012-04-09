@@ -1,0 +1,5 @@
+%div.radio#template_id
+  = radio_button_tag :template_id, t.id, i==0 ? true : false, :id => "template_id_#{t.id}"
+  %label{:for => "template_id_#{t.id}"}
+    = image_tag t.icon_url
+    = t.name.sub(' / ','<br />').html_safe

@@ -1,0 +1,23 @@
+.settingscontainer
+  %h2 Domains
+
+
+  %ul.domains
+    - @domains.sort{|x,y| x.name<=>y.name}.each do |domain|
+      %li.domain{:id=>"domain_#{domain.id}"}
+        = link_to 'Delete', domain_destroy_path(domain), :method=>'post', :remote => true, :confirm => "are you sure you want to delete the domain #{domain.name}?", :class => 'delete'
+        = domain.name
+        %ul.routes
+          - @routes.select{|x| x.domain_id == domain.id}.each do |route|
+            %li.route
+              %span.subdomain
+                =route.subdomain
+              -if route.subdomain
+                \.
+              %span.name
+                =domain.name
+              .admin
+                %ul
+                  = render :partial => 'apps/show_mini', :locals => {:app => route.app}
+  %p
+    You can add more domains by adding Locations to your Apps.

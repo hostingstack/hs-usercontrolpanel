@@ -1,0 +1,6 @@
+%ul.installed-apps
+  - @apps.each do |app|
+    = render :partial => 'show', :locals => {:app => app}
+  %li{:class => (@apps.count == 0 ? "new_app_btn new_first_app_btn" : "new_app_btn")}
+    %a{:href => new_app_path}
+      Add Website

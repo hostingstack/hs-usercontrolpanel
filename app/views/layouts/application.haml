@@ -1,0 +1,45 @@
+!!! 5
+%html
+  %head
+    %title= '%s Controlpanel' % CLOUD_CONFIG['cloud.name']
+    = stylesheet_link_tag :all
+    = javascript_include_tag :defaults
+    = javascript_include_tag 'jquery-ext'
+    = javascript_include_tag 'jquery.form'
+    = javascript_include_tag 'jquery.autoclear'
+    = javascript_include_tag 'jquery.uploadProgress'
+    = csrf_meta_tag
+  %body{:class => body_classes}
+    .head
+      %h1
+        %a{:href => root_path}
+          %span= CLOUD_CONFIG['cloud.name']
+    .navigation
+      %ul
+        - if current_user
+          %li= navigation_link_to 'Websites', root_path
+          %li= navigation_link_to 'Settings', userprofile_path
+          %li= navigation_link_to "Logout #{current_user.name}", destroy_user_session_path
+        - else
+          %li= navigation_link_to 'Login', new_user_session_path
+      - if current_user and current_user.is_admin
+        .switchuser
+          Fake login: 
+          = switch_user_select
+    .content-container{:class=> @app && @app.id ? "has_app" : ''}
+      - if notice
+        %p.notice
+          = notice
+      - if alert
+        %p.alert
+          = alert
+
+      - if @app and @app.id
+        = render :partial => 'apps/show', :locals => {:app => @app}
+      .content
+        = yield
+    .footer
+      != CLOUD_CONFIG['ucp.html.footer'] || ""
+      Powered by&nbsp;
+      %a{:href => "http://hostingstack.org/"}> HostingStack
+      \. &copy; 2010-12 Efficient Cloud Ltd.

@@ -1,0 +1,2 @@
+module AppInstallsHelper
+end

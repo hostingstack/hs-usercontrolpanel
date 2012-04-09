@@ -1,0 +1,6 @@
+#!/bin/sh
+echo starting
+export RAILS_ENV=production
+cd /usr/lib/hs/usercontrolpanel
+exec 2>&1
+exec setuidgid hsucp stdbuf -o0 -e0 ./bin/unicorn -c ./config/unicorn.rb

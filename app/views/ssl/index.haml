@@ -1,0 +1,20 @@
+%ul.certs
+  - @certs.each do |cert|
+    %li.cert
+      %h4 SSL Certificate
+      .expiration
+        - if cert.expiration < Time.now
+          %strong{:style => "color: red"} Expired!
+        - else
+          %em
+            Expires in
+            = distance_of_time_in_words_to_now cert.expiration
+      %ul.names
+        - ([cert.common_name] + cert.alt_names).each do |name|
+          %li.name= "https://%s" % name
+      .issuer
+        Issued by
+        = cert.issuer
+      = link_to "Destroy", ssl_path(cert), :method => :delete, :class => 'delete', :confirm => "This will irrevocably delete the certificate and private key. Really continue?"
+  %li.new_cert_btn
+    %a{:href => new_ssl_path} Add SSL certificate

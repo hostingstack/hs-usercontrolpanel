@@ -1,0 +1,9 @@
+.settings
+  <h3>Locations</h3>
+  %ul.locations
+    %li.location
+      %label Show at
+      .url
+        %small> http://
+        = "app%d.solidrails.net/" % [@app.id]
+    = render :partial => 'routes/show', :collection => @app.routes, :as => :route

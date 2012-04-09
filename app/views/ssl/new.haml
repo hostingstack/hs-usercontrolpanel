@@ -1,0 +1,13 @@
+%h2 Add SSL certificate
+
+= form_for @key_material, :url => ssl_index_path, :html => {:multipart => true} do |f|
+  - if @key_material.errors
+    %p.error
+      = @key_material.errors.map{|x,y| x.to_s.humanize + ' ' + y}.join "<br />"
+  %p
+    = f.label :certificate, "Certificate (e.g. hostname.crt)"
+    = f.file_field :certificate
+  %p
+    = f.label :key, "Private key (e.g. hostname.key)"
+    = f.file_field :key
+  = f.submit "Upload"

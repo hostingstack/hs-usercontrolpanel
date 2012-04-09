@@ -1,0 +1,25 @@
+upstream hs_ucp_server {
+  server unix:/var/lib/hs/usercontrolpanel/run/server.sock fail_timeout=0;
+}
+
+upload_progress proxied 5m;
+
+server {
+  listen       9100;
+  server_name  cp.example.org api.example.org;
+  root /usr/lib/hs/usercontrolpanel/public;
+  location = /500.html { root /usr/lib/hs/usercontrolpanel/public; }
+  error_page 500 502 503 504 /500.html;
+  location / {
+    client_max_body_size 50M; # For CLI Upload API
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+    proxy_pass http://hs_ucp_server;
+    track_uploads proxied 60s;
+  }
+
+  location ^~ /progress {
+    report_uploads proxied;
+  }
+}

@@ -1,0 +1,69 @@
+body.ssl.index {
+   .cert {
+     margin-bottom: 40px;
+     border: 1px solid #d69b4f;
+     width: 400px;
+     border-radius: 5px; background: url('/images/ssl.png') 7px 4px no-repeat #f2ebda;
+     position: relative;
+
+     h4 {
+       color: #222;
+       font-weight: bold;
+       padding: 3px 5px 4px 29px;
+       font-size: 10pt;
+       border-bottom: 1px solid #dcba88;
+     }
+     .expiration {
+       position: absolute;
+       top: 4px;
+       right: 7px;
+       font-size: 9pt;
+     }
+     .names {
+       font-size: 12px;
+       padding: 10px 5px 7px 7px;
+       background-color: white;
+       margin-bottom: 0;
+       .name {
+         margin-bottom: 3px;
+       }
+     }
+     .issuer {
+       color: #222;
+       border-top: 1px solid #dcba88;
+       padding: 3px 5px 4px 7px;
+       font-weight: bold;
+       font-size: 8pt;
+     }
+     a.delete {
+       position: absolute;
+       bottom: 5px;
+       right: 5px;
+     }
+   }
+   
+  .new_cert_btn {
+    a {
+      width: 10.5em;
+      height: 17px;
+      padding: 5px 7px 7px 37px;
+      display: block;
+      border: 1px solid transparent;
+      border-radius: 16px;
+      font-size: 1.05em;
+      font-weight: bold;
+      color: #fff;
+      letter-spacing: 0.02em;
+      background: url(/images/action-plus-32.png) no-repeat -1px -1px #70A73B;
+    }
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+body.ssl.new form, body.ssl.create form {
+  label {
+    display: block;
+  }
+}

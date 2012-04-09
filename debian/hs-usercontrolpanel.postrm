@@ -1,0 +1,13 @@
+#! /bin/sh
+
+set -e
+
+if [ "$1" = "purge" ]; then
+  rm -rf /var/log/hs-usercontrolpanel
+  rm -rf /var/lib/hs/usercontrolpanel
+
+  dpkg-statoverride --remove /var/log/hs-usercontrolpanel
+  dpkg-statoverride --remove /var/lib/hs/usercontrolpanel/run
+fi
+
+#DEBHELPER#

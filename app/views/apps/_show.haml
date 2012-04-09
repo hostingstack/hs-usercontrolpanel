@@ -1,0 +1,33 @@
+%li.app.with-screenshot
+  %div.with-screenshot
+    = link_to image_tag(app.screenshot_url), app.default_route
+    - if app.template.icon_url
+      = link_to image_tag(app.template.icon_url, :class => 'icon'), app.default_route
+  .name
+    = app.name
+  .location
+    .url
+      %small>
+        %a{:href=>app.default_route}
+          = app.default_route
+
+  .stats
+    /Services:
+    - app.service_instances.each do |service_instance|
+      %img{src: "/images/services/#{service_instance.service.name.downcase}.png", title: service_instance.service.name}
+    /
+      %br>
+      10 Instances
+      %br>
+      ø 3.5 ms Latency
+      %br>
+      n-Redundancy
+  %ul.actions
+    %li.update= link_to 'Upload Sourcecode', new_app_deployment_url(app)
+    %li.locations= link_to 'Locations', app_routes_url(app)
+    %li.databases= link_to 'Databases', app_databases_url(app)
+    %li.architecture= link_to 'Architecture', app_architecture_url(app)
+    %li.commands= link_to 'Cronjobs', app_commands_url(app)
+    //%li.plugins= link_to 'Add-ons', '#'
+    //%li.stats= link_to 'Stats', '#'
+

@@ -1,0 +1,27 @@
+defaults: &defaults
+  cc_api_host : http://localhost:8010
+  cc_api_user: CHANGEME
+  cc_api_password: CHANGEME
+  codemanager_host : http://localhost:9200
+  billing_api_user: CHANGEME
+  billing_api_password: CHANGEME
+
+production:
+  cc_api_host: http://cc.example.org
+  cc_api_user: CHANGEME
+  cc_api_password: CHANGEME
+  codemanager_host : http://cc.example.org:9200
+  billing_api_user: CHANGEME
+  billing_api_password: CHANGEME
+
+test:
+  cc_api_host: http://localhost:8080
+  cc_api_user: user
+  cc_api_password: pass
+  codemanager_host : http://localhost:9200
+  billing_api_user: demo1@hostingstack.org
+  billing_api_password: CHANGEME
+
+development:
+  <<: *defaults
+

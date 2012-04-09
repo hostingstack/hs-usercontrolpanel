@@ -1,0 +1,14 @@
+.user_sessions.new, .user_sessions.create {
+  .content {
+    overflow: hidden;
+    
+    fieldset {
+      font-size: 108%;
+      float: left;
+      width: 44%;
+      height: 12.5em;
+      margin-right: 1em;
+      padding: 1em;
+    }
+  }
+}

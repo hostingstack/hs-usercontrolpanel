@@ -1,0 +1,11 @@
+.ssh
+  To connect to your App via SSH, use this:
+  %br
+  %br
+    %code= 'ssh app%d@%s' % [@app.id, CLOUD_CONFIG['apps.ssh.gateway.host']]
+  %br
+    Please note that local changes will be thrown away.
+  %br
+  %span#new_password  
+    = button_to 'Request new password', app_new_ssh_password_path(@app), :method=>'post', :remote => true, :disable_with => 'Loading...'
+

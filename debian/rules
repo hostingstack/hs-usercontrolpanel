@@ -1,0 +1,31 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+PRODUCT=hs-usercontrolpanel
+PRODUCT_ROOT=usr/lib/hs/usercontrolpanel
+DEB_ROOT=$(CURDIR)/debian/
+DESTPATH=$(DEB_ROOT)$(PRODUCT)/$(PRODUCT_ROOT)
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+override_dh_clean:
+	dh_testdir
+	rm -rf bundled .bundle debian/$(PRODUCT) tmp test/reports
+	dh_auto_clean
+	dh_clean
+
+override_dh_auto_install:
+# product files
+	install -d $(DESTPATH)
+	/var/lib/gems/1.9.1/bin/bundle install --deployment --without development --path=bundled --binstubs
+	rsync -r --exclude=/test/ --exclude=/log/ --exclude=/debian/ --exclude=.git* ./ $(DESTPATH)
+# remove shared config files
+	rm -f $(DESTPATH)/config/hs.*
+# nginx site
+	install -d $(CURDIR)/debian/$(PRODUCT)/etc/nginx/sites-available
+	install -m 0644 debian/nginx-site $(CURDIR)/debian/$(PRODUCT)/etc/nginx/sites-available/$(PRODUCT)-site
+
+%:
+	dh $@
+

@@ -1,0 +1,14 @@
+= f.label nil, "Technology:"
+%br
+- AppTemplate.find(:all, :params => {:template_type => "framework"}).each_with_index do |t, i|
+  = render :partial => "new_template", :locals => {:t => t, :i => i}
+%br{:style => 'clear: left'}
+%br
+= label_tag :database_service, "Database:"
+%br
+- {:pg => 'PostgreSQL', :mysql => 'MySQL'}.each_pair.each_with_index do |p,i|
+  %div.radio#database_service
+    = radio_button_tag :database_service, p[0], i==0 ? true : false, :id => "database_service_#{p[0]}"
+    %label{:for => "database_service_#{p[0]}"}
+      = image_tag "/images/services/#{p[1].downcase}.png"
+      = p[1]

@@ -1,0 +1,21 @@
+%h2 Add new website
+
+= form_for @app do |f|
+  #tabs
+    %ul
+      %li
+        %a{:href => "#tabs-1"} Application Templates
+      %li
+        %a{:href => "#tabs-2"} Custom Application
+    #tabs-1
+      - AppTemplate.find(:all, :params => {:template_type => "application"}).each_with_index do |t, i|
+        = render :partial => "new_template", :locals => {:t => t, :i => i}
+    #tabs-2
+      = render :partial => "new_custom", :locals => {:f => f}
+  %p.aside
+    You can configure website address and other settings later on.
+  %br
+  = f.submit "Continue"
+
+:javascript
+  $("#tabs").tabs();
