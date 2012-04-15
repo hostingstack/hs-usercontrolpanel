@@ -1,2 +1,4 @@
 var/log/hs-usercontrolpanel
+var/lib/hs
+var/lib/hs/usercontrolpanel
 var/lib/hs/usercontrolpanel/run
