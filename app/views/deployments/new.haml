@@ -47,15 +47,15 @@
     %p
       1. Install the deploy commandline tool (for OSX and Linux - requires Rubygems)
     .upload-commands
-      gem install deployto
+      gem install hsdeploy
     %p
       2. Create the target (only necessary once)
     .upload-commands
-      = "deploy add production %s" % @app.cli_api_app_name
+      = "hsdeploy add production %s" % @app.cli_api_app_name
     %p
       3. Deploy
     .upload-commands
-      deploy production
+      hsdeploy production
 
     %p
       After the upload finished, you can
