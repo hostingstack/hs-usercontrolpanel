@@ -21,7 +21,7 @@ override_dh_auto_install:
 # product files
 	install -d $(DESTPATH)
 	$(BUNDLE) install --deployment --without development --path=bundled --binstubs
-	rsync -r --exclude=/test/ --exclude=/log/ --exclude=/debian/ --exclude=.git* ./ $(DESTPATH)
+	rsync -r --exclude=/test/ --exclude=/log/ --exclude=/debian/ --exclude=/.git/ ./ $(DESTPATH)
 # remove shared config files
 	rm -f $(DESTPATH)/config/hs.*
 # nginx site
